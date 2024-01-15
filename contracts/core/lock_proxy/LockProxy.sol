@@ -71,7 +71,7 @@ contract LockProxy is Ownable {
         require(amount != 0, "amount cannot be zero!");
         
         
-        require(_burn(fromAssetHash, amount), "transfer asset from fromAddress to lock_proxy contract  failed!");
+        require(_burn(fromAssetHash, amount), "burn asset from fromAddress failed!");
         
         bytes memory toAssetHash = assetHashMap[fromAssetHash][toChainId];
         require(toAssetHash.length != 0, "empty illegal toAssetHash");
@@ -118,7 +118,7 @@ contract LockProxy is Ownable {
         address toAddress = Utils.bytesToAddress(args.toAddress);
         
         
-        require(_mint(toAssetHash, toAddress, args.amount), "transfer asset from lock_proxy contract to toAddress failed!");
+        require(_mint(toAssetHash, toAddress, args.amount), "mint asset to toAddress failed!");
         
         emit UnlockEvent(toAssetHash, toAddress, args.amount);
         return true;
@@ -144,7 +144,7 @@ contract LockProxy is Ownable {
             // make sure lockproxy contract will decline any received ether
             require(msg.value == 0, "there should be no ether transfer!");
             // actively transfer amount of asset from msg.sender to lock_proxy contract
-            require(_burnERC20(fromAssetHash, _msgSender(), address(this), amount), "transfer erc20 asset to lock_proxy contract failed!");
+            require(_burnERC20(fromAssetHash, _msgSender(), address(this), amount), "burn erc20 asset from msgSender failed!");
         }
         return true;
     }
@@ -155,7 +155,7 @@ contract LockProxy is Ownable {
             address(uint160(toAddress)).transfer(amount);
         } else {
             // actively transfer amount of asset from lock_proxy contract to toAddress
-            require(_mintERC20(toAssetHash, toAddress, amount), "transfer erc20 asset from lock_proxy contract to toAddress failed!");
+            require(_mintERC20(toAssetHash, toAddress, amount), "mint erc20 asset to toAddress failed!");
         }
         return true;
     }
